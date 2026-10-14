@@ -3,6 +3,6 @@ repo: mats-romero/desarrollo-agentico-todo-03
 label: adw
 interval_seconds: 20
 
-# Invoca el workflow que hayas creado. {{issue_url}} recibe cada issue.
+# /adw lee cada issue etiquetada y la lleva hasta un PR. {{issue_url}} recibe su URL.
 prompt: >-
   /adw {{issue_url}} --remote origin --base main

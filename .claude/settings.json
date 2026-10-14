@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill",
+      "Read",
+      "Glob",
+      "Grep",
+      "Edit",
+      "Write",
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Bash(go:*)",
+      "Bash(gofmt:*)",
+      "Bash(soda:*)",
+      "Bash(GO_ENV=test go:*)",
+      "Bash(GO_ENV=test soda:*)",
+      "Bash(docker compose:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(sed:*)",
+      "Bash(grep:*)",
+      "Bash(curl:*)",
+      "Bash(sleep:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(docker compose down:*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
+}

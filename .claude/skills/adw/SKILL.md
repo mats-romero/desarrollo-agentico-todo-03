@@ -20,11 +20,11 @@ Coordina las skills existentes sin sustituirlas: `/feature`, `/bug` o `/chore` p
 
 ## 1. Preparación
 
-1. Analiza los argumentos. Si, una vez retiradas las opciones, el encargo queda vacío o no describe ningún cambio identificable en este repositorio, detente.
-2. Deriva del encargo un título breve en español (una frase que resuma el cambio) y un `<slug>`: el título en kebab-case, en ASCII y con 40 caracteres como máximo.
+1. Analiza los argumentos. Si el encargo es la URL de una issue de GitHub (`https://github.com/<owner>/<repo>/issues/<n>`), como la que pasa `adws/trigger-github.sh`, léela con `gh issue view <url> --json number,title,body,comments,state`. Si no está abierta, detente. Si lo está, usa su título, cuerpo y comentarios relevantes como encargo y anota su número `<n>`. Si, una vez retiradas las opciones, el encargo queda vacío o no describe ningún cambio identificable en este repositorio, detente.
+2. Deriva del encargo un título breve en español (una frase que resuma el cambio) y un `<slug>`: el título en kebab-case, en ASCII y con 40 caracteres como máximo. Si viene de una issue, antepón su número: `<slug>` = `<n>-<título en kebab-case>`.
 3. Comprueba que `gh auth status` funciona y que `git remote get-url <remote>` apunta a un repositorio de GitHub; obtén `<owner>/<repo>` de esa URL.
 4. Comprueba `git status --short --branch`. Si hay cambios sin commitear, detente: no mezcles trabajo ajeno. Guarda el nombre de la rama actual para restaurarla al final.
-5. Comprueba si ya existe un PR abierto con head `adw/<slug>` (`gh pr list --repo <owner>/<repo> --state open --head adw/<slug> --json url`). Si existe, informa de su URL y termina sin hacer nada.
+5. Comprueba si ya existe un PR abierto con head `adw/<slug>` (`gh pr list --repo <owner>/<repo> --state open --head adw/<slug> --json url`). Si viene de una issue, busca cualquier PR abierto cuya rama empiece por `adw/<n>-`, porque el trigger repite las issues abiertas. Si existe, informa de su URL y termina sin hacer nada.
 6. `git fetch <remote> <base>` y crea la rama de trabajo desde la base remota: `git switch -c adw/<slug> <remote>/<base>`. Si la rama ya existe en local o en el remoto, detente e informa.
 7. Asegura el entorno de tests sin destruir nada:
    - `docker compose up -d db` y espera a que `db` figure como saludable en `docker compose ps`.
@@ -52,7 +52,7 @@ Invoca `/<tipo>` con un argumento que contenga, en este orden:
 
 Cuando la skill termine, comprueba que el plan existe y que es el único archivo modificado (`git status --short`). Revisa las incertidumbres que declare:
 
-- Si alguna impide implementar sin elegir entre soluciones con comportamientos distintos, detente sin abrir PR. Informa del bloqueo y de la ruta del plan, y deja la rama local para que el encargo pueda precisarse.
+- Si alguna impide implementar sin elegir entre soluciones con comportamientos distintos, detente sin abrir PR. Informa del bloqueo y de la ruta del plan, y deja la rama local para que el encargo pueda precisarse. Si viene de una issue, explica también el bloqueo en ella con `gh issue comment`.
 - Si son decisiones razonables que el plan ya resuelve como inferencias explícitas, continúa. El PR las hará visibles para revisión.
 
 ## 4. Implementación
@@ -60,7 +60,7 @@ Cuando la skill termine, comprueba que el plan existe y que es el único archivo
 Invoca `/implement plans/<slug>.md`. Después:
 
 1. Comprueba que se ejecutaron las validaciones del plan y que pasan. Como mínimo, si cambió código Go: `gofmt -l .` vacío, `go vet ./...`, `GO_ENV=test go test -p 1 ./...` y `go build ./...`.
-2. Si algo falla, intenta corregirlo solo dentro del alcance del plan. Si sigue fallando o `/implement` informó de un bloqueo, detente: informa del motivo y del resultado de los comandos, deja la rama local sin push y no abras PR.
+2. Si algo falla, intenta corregirlo solo dentro del alcance del plan. Si sigue fallando o `/implement` informó de un bloqueo, detente: informa del motivo y del resultado de los comandos (también en la issue, si la hay), deja la rama local sin push y no abras PR.
 3. Revisa `git diff --check` y `git status --short`. Todo cambio debe estar dentro del alcance del plan.
 
 ## 5. Commit
@@ -78,7 +78,7 @@ Sigue las reglas de `.claude/commands/git/commit.md`:
 1. `git push -u <remote> adw/<slug>`.
 2. Crea el PR con `gh pr create --repo <owner>/<repo> --base <base> --head adw/<slug>`:
    - título: el mismo que la primera línea del commit;
-   - cuerpo en español con estas secciones: `## Encargo` (el texto original, citado), `## Resumen` (qué cambia y por qué), `## Clasificación` (tipo y motivo), `## Plan` (ruta del plan y decisiones o inferencias principales), `## Validación` (cada comando y su resultado) y `## Riesgos` (los residuales del informe de `/implement`); al final, las líneas de atribución que indique la configuración de la sesión.
+   - cuerpo en español con estas secciones: `## Encargo` (el texto original, citado), `## Resumen` (qué cambia y por qué), `## Clasificación` (tipo y motivo), `## Plan` (ruta del plan y decisiones o inferencias principales), `## Validación` (cada comando y su resultado) y `## Riesgos` (los residuales del informe de `/implement`); al final, `Closes #<n>` si viene de una issue y las líneas de atribución que indique la configuración de la sesión.
 3. No habilites auto-merge ni fusiones.
 
 ## 7. Cierre
