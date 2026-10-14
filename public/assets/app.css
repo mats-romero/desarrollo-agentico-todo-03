@@ -129,8 +129,16 @@ h1 {
   border-bottom: 1px solid var(--color-border);
 }
 
-.task-title {
+.task-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
   align-self: center;
+  min-width: 0;
+}
+
+.task-title {
   min-width: 0;
   padding: 0.65rem 0;
   overflow-wrap: anywhere;
@@ -189,6 +197,34 @@ h1 {
   text-decoration-color: #96968f;
 }
 
+.priority-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.priority-alta {
+  color: var(--color-danger);
+  background: #fbeceb;
+}
+
+.priority-media {
+  color: #7a5a00;
+  background: #fbf3dc;
+}
+
+.priority-baja {
+  color: var(--color-muted);
+  background: var(--color-sidebar);
+}
+
+.task-completed .priority-badge {
+  opacity: 0.6;
+}
+
 .task-completed .completion-icon {
   background: #777771;
   border-color: #777771;
@@ -245,7 +281,8 @@ h1 {
   line-height: 1;
 }
 
-input[type="text"] {
+input[type="text"],
+select {
   width: 100%;
   min-width: 0;
   min-height: 44px;
@@ -261,11 +298,17 @@ input[type="text"] {
   flex: 1;
 }
 
+.new-task-row select {
+  flex: 0 0 auto;
+  width: auto;
+}
+
 input::placeholder {
   color: var(--color-muted);
 }
 
-input[aria-invalid="true"] {
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
   border-color: var(--color-danger);
   background: #fff9f7;
 }

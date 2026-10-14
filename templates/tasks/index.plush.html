@@ -29,7 +29,10 @@
               <span class="toggle-label sr-only"><%= if (t.Completed) { %>Reabrir<% } else { %>Completar<% } %></span>
             </button>
           </form>
-          <span class="task-title"><%= t.Title %></span>
+          <div class="task-main">
+            <span class="task-title"><%= t.Title %></span>
+            <span class="priority-badge priority-<%= t.Priority %>"><span class="sr-only">Prioridad </span><%= t.PriorityLabel() %></span>
+          </div>
           <%= if (t.Completed) { %>
             <span class="task-status">Completada</span>
           <% } %>
@@ -68,13 +71,24 @@
       placeholder="Añadir una tarea…"
       maxlength="200"
       autocomplete="off"
-      <%= if (errors.HasAny()) { %>autofocus aria-invalid="true" aria-describedby="title-error"<% } %>
+      <%= if (len(errors.Get("title")) > 0) { %>autofocus aria-invalid="true" aria-describedby="title-error"<% } %>
     >
+    <label for="task-priority" class="sr-only">Prioridad</label>
+    <select id="task-priority" name="priority" <%= if (len(errors.Get("priority")) > 0) { %>aria-invalid="true" aria-describedby="priority-error"<% } %>>
+      <option value="alta" <%= if (task.Priority == "alta") { %>selected<% } %>>Alta</option>
+      <option value="media" <%= if (task.Priority == "media") { %>selected<% } %>>Media</option>
+      <option value="baja" <%= if (task.Priority == "baja") { %>selected<% } %>>Baja</option>
+    </select>
     <button type="submit" class="button button-primary">Añadir</button>
   </div>
-  <%= if (errors.HasAny()) { %>
+  <%= if (len(errors.Get("title")) > 0) { %>
     <p id="title-error" class="field-error" role="alert">
       <%= for (msg) in errors.Get("title") { %><%= msg %><% } %>
+    </p>
+  <% } %>
+  <%= if (len(errors.Get("priority")) > 0) { %>
+    <p id="priority-error" class="field-error" role="alert">
+      <%= for (msg) in errors.Get("priority") { %><%= msg %><% } %>
     </p>
   <% } %>
 </form>
