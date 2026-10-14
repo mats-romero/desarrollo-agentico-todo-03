@@ -352,3 +352,13 @@ func (as *ActionSuite) Test_TasksToggle_KeepsPriority() {
 	as.True(task.Completed)
 	as.Equal(models.PriorityLow, task.Priority)
 }
+
+func (as *ActionSuite) Test_AppJS_TogglePersistsWithPost() {
+	res := as.HTML("/assets/app.js").Get()
+	as.Equal(200, res.Code)
+
+	body := res.Body.String()
+	as.Contains(body, `method: "POST"`)
+	as.Contains(body, "new FormData(form)")
+	as.NotContains(body, "fetch(form.action);")
+}
