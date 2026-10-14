@@ -12,7 +12,7 @@
   <% } else { %>
     <ul class="task-list">
       <%= for (t) in tasks { %>
-        <li class="task<%= if (t.Completed) { %> task-completed<% } %>">
+        <li class="task task-priority-<%= t.Priority %><%= if (t.Completed) { %> task-completed<% } %>">
           <form action="/tasks/<%= t.ID %>/toggle" method="POST" class="task-toggle" data-task-toggle>
             <input type="hidden" name="authenticity_token" value="<%= authenticity_token %>">
             <input type="hidden" name="_method" value="PUT">
@@ -29,7 +29,10 @@
               <span class="toggle-label sr-only"><%= if (t.Completed) { %>Reabrir<% } else { %>Completar<% } %></span>
             </button>
           </form>
-          <span class="task-title"><%= t.Title %></span>
+          <div class="task-main">
+            <span class="task-title"><%= t.Title %></span>
+            <span class="priority-badge priority-<%= t.Priority %>"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4m0 0h11l-2 4 2 4H5" /></svg><span class="sr-only">Prioridad </span><%= t.PriorityLabel() %></span>
+          </div>
           <%= if (t.Completed) { %>
             <span class="task-status">Completada</span>
           <% } %>
@@ -59,22 +62,35 @@
   <input type="hidden" name="authenticity_token" value="<%= authenticity_token %>">
   <div class="new-task-row">
     <span class="add-mark" aria-hidden="true">+</span>
-    <label for="task-title" class="sr-only">Nueva tarea</label>
-    <input
-      id="task-title"
-      type="text"
-      name="title"
-      value="<%= task.Title %>"
-      placeholder="Añadir una tarea…"
-      maxlength="200"
-      autocomplete="off"
-      <%= if (errors.HasAny()) { %>autofocus aria-invalid="true" aria-describedby="title-error"<% } %>
-    >
+    <div class="composer">
+      <label for="task-title" class="sr-only">Nueva tarea</label>
+      <input
+        id="task-title"
+        type="text"
+        name="title"
+        value="<%= task.Title %>"
+        placeholder="Añadir una tarea…"
+        maxlength="200"
+        autocomplete="off"
+        <%= if (len(errors.Get("title")) > 0) { %>autofocus aria-invalid="true" aria-describedby="title-error"<% } %>
+      >
+      <label for="task-priority" class="sr-only">Prioridad</label>
+      <select id="task-priority" name="priority" <%= if (len(errors.Get("priority")) > 0) { %>aria-invalid="true" aria-describedby="priority-error"<% } %>>
+        <option value="alta" <%= if (task.Priority == "alta") { %>selected<% } %>>Alta</option>
+        <option value="media" <%= if (task.Priority == "media") { %>selected<% } %>>Media</option>
+        <option value="baja" <%= if (task.Priority == "baja") { %>selected<% } %>>Baja</option>
+      </select>
+    </div>
     <button type="submit" class="button button-primary">Añadir</button>
   </div>
-  <%= if (errors.HasAny()) { %>
+  <%= if (len(errors.Get("title")) > 0) { %>
     <p id="title-error" class="field-error" role="alert">
       <%= for (msg) in errors.Get("title") { %><%= msg %><% } %>
+    </p>
+  <% } %>
+  <%= if (len(errors.Get("priority")) > 0) { %>
+    <p id="priority-error" class="field-error" role="alert">
+      <%= for (msg) in errors.Get("priority") { %><%= msg %><% } %>
     </p>
   <% } %>
 </form>
