@@ -6,34 +6,38 @@
 <form action="/tasks/<%= task.ID %>" method="POST" class="edit-task">
   <input type="hidden" name="authenticity_token" value="<%= authenticity_token %>">
   <input type="hidden" name="_method" value="PUT">
-  <label for="task-title">Título</label>
-  <input
-    id="task-title"
-    type="text"
-    name="title"
-    value="<%= task.Title %>"
-    maxlength="200"
-    autocomplete="off"
-    autofocus
-    <%= if (len(errors.Get("title")) > 0) { %>aria-invalid="true" aria-describedby="title-error"<% } else { %>aria-describedby="title-help"<% } %>
-  >
-  <p id="title-help" class="field-hint">Hasta 200 caracteres.</p>
-  <%= if (len(errors.Get("title")) > 0) { %>
-    <p id="title-error" class="field-error" role="alert">
-      <%= for (msg) in errors.Get("title") { %><%= msg %><% } %>
-    </p>
-  <% } %>
-  <label for="task-priority">Prioridad</label>
-  <select id="task-priority" name="priority" <%= if (len(errors.Get("priority")) > 0) { %>aria-invalid="true" aria-describedby="priority-error"<% } %>>
-    <option value="alta" <%= if (task.Priority == "alta") { %>selected<% } %>>Alta</option>
-    <option value="media" <%= if (task.Priority == "media") { %>selected<% } %>>Media</option>
-    <option value="baja" <%= if (task.Priority == "baja") { %>selected<% } %>>Baja</option>
-  </select>
-  <%= if (len(errors.Get("priority")) > 0) { %>
-    <p id="priority-error" class="field-error" role="alert">
-      <%= for (msg) in errors.Get("priority") { %><%= msg %><% } %>
-    </p>
-  <% } %>
+  <div class="field">
+    <label for="task-title">Título</label>
+    <input
+      id="task-title"
+      type="text"
+      name="title"
+      value="<%= task.Title %>"
+      maxlength="200"
+      autocomplete="off"
+      autofocus
+      <%= if (len(errors.Get("title")) > 0) { %>aria-invalid="true" aria-describedby="title-error"<% } else { %>aria-describedby="title-help"<% } %>
+    >
+    <p id="title-help" class="field-hint">Hasta 200 caracteres.</p>
+    <%= if (len(errors.Get("title")) > 0) { %>
+      <p id="title-error" class="field-error" role="alert">
+        <%= for (msg) in errors.Get("title") { %><%= msg %><% } %>
+      </p>
+    <% } %>
+  </div>
+  <div class="field">
+    <label for="task-priority">Prioridad</label>
+    <select id="task-priority" name="priority" <%= if (len(errors.Get("priority")) > 0) { %>aria-invalid="true" aria-describedby="priority-error"<% } %>>
+      <option value="alta" <%= if (task.Priority == "alta") { %>selected<% } %>>Alta</option>
+      <option value="media" <%= if (task.Priority == "media") { %>selected<% } %>>Media</option>
+      <option value="baja" <%= if (task.Priority == "baja") { %>selected<% } %>>Baja</option>
+    </select>
+    <%= if (len(errors.Get("priority")) > 0) { %>
+      <p id="priority-error" class="field-error" role="alert">
+        <%= for (msg) in errors.Get("priority") { %><%= msg %><% } %>
+      </p>
+    <% } %>
+  </div>
   <div class="edit-task-actions">
     <a href="/" class="button">Cancelar</a>
     <button type="submit" class="button button-primary">Guardar cambios</button>
